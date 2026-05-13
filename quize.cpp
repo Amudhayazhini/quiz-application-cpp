@@ -4,56 +4,134 @@ using namespace std;
 
 int main()
 {
-    // ADMIN ACCOUNT
+    // ADMIN STORAGE
     string adminID;
     string adminPassword;
 
-    string questions[5];
-    string options[5][4];
-    int correctAnswers[5];
-    int studentAnswers[5];
-    string studentNames[10];
-int rollNumbers[10];
-string studentPasswords[10];
-int studentcount=0;
-int choice;
-cout<<"==================================\n";
-cout<<"        QUIZE APPLICATION\n";
-cout<<"==================================\n";
-cout<<"\n=======ADMIN REGISTERATION=======\n";
-cout<<"Create Admin Id";
-cin>>adminId;
-cout<<"Create Admin Password: ";
-cin>>adminPassword;
-cout<<"\nAdmin Account Created Successfully!\n";
-cout<<"\n=====================================\n";
-cout<<"1.Question Setter Login\n2.Student Register\n3.Student Login\n4.Exit\n";
-cout<<"Enter Choice: ";
-cin>>choice;
-if(choice==1){
-string username,password;
-cout<<"\n===== ADMIN LOGIN ======\n";
-cout<<"Enter Admin ID: ";
-cin>>username;
-cout<<"Enter Password: ";
-cin>>password;
-if(username==adminId && password == adminPassword){
-cout<<"\nAdmin Login Successful!\n";
-for(int i=0;i<5;i++){
-cin.ignore();
-cout<<"\nEnter Question "<<i+1<<": ";
-getline(cin,question[i];
-for(int j=0;j<4;j++){
-for(int j=0;ij<4;j++{
-cout<<"Enter Looption " <<j+1<<": "0;
-getline(cin, options[i][j]);
+    bool adminCreated = false;
+
+    // QUIZ CODE
+    string quizCode;
+
+    // QUESTION STORAGE
+    string questions[100];
+    string options[100][4];
+    int correctAnswers[100];
+
+    int totalQuestions = 0;
+
+    // STUDENT STORAGE
+    string studentNames[50];
+    int rollNumbers[50];
+    string studentPasswords[50];
+
+    int studentCount = 0;
+
+    int choice;
+
+    cout << "=====================================\n";
+    cout << "         QUIZ APPLICATION\n";
+    cout << "=====================================\n";
+
+    cout << "1. Admin Registration\n";
+    cout << "2. Admin Login\n";
+    cout << "3. Student Register\n";
+    cout << "4. Student Login\n";
+    cout << "5. Exit\n";
+
+    cout << "Enter Choice: ";
+    cin >> choice;
+
+    // ADMIN REGISTRATION
+    if (choice == 1)
+    {
+        cout << "\n====== ADMIN REGISTRATION ======\n";
+
+        cout << "Create Admin ID: ";
+        cin >> adminID;
+
+        // PASSWORD LOOP
+        while (true)
+        {
+            cout << "Create Password (Max 6 Characters): ";
+            cin >> adminPassword;
+
+            if (adminPassword.length() <= 6)
+            {
+                break;
+            }
+            else
+            {
+                cout << "\nPassword exceeded limit!\n";
+                cout << "Please Enter Password Again.\n\n";
+            }
+        }
+
+        adminCreated = true;
+
+        cout << "\nAdmin Account Created Successfully!\n";
+    }
+
+    // ADMIN LOGIN
+    else if (choice == 2)
+    {
+        if (adminCreated == false)
+        {
+            cout << "\nPlease Create Admin Account First!\n";
+            return 0;
+        }
+
+        string username, password;
+
+        cout << "\n====== ADMIN LOGIN ======\n";
+
+        cout << "Enter Admin ID: ";
+        cin >> username;
+
+        cout << "Enter Password: ";
+        cin >> password;
+
+        // LOGIN CHECK
+        if (username == adminID &&
+            password == adminPassword)
+        {
+            cout << "\nAdmin Login Successful!\n";
+
+            // CREATE QUIZ CODE
+            cout << "\nCreate Quiz Code: ";
+            cin >> quizCode;
+
+            cout << "\nEnter Number of Questions: ";
+            cin >> totalQuestions;
+
+            cin.ignore();
+
+            // ADD QUESTIONS
+            for (int i = 0; i < totalQuestions; i++)
+            {
+                cout << "\nEnter Question "
+                     << i + 1 << ": ";
+
+                getline(cin, questions[i]);
+
+                // OPTIONS
+                for (int j = 0; j < 4; j++)
+                {
+                    cout << "Enter Option "
+                         << j + 1 << ": ";
+
+                    getline(cin, options[i][j]);
                 }
 
                 cout << "Enter Correct Option (1-4): ";
                 cin >> correctAnswers[i];
+
+                cin.ignore();
             }
 
             cout << "\nQuestions Added Successfully!\n";
+            cout << "Quiz Code Created: "
+                 << quizCode << endl;
         }
         else
         {
@@ -62,7 +140,7 @@ getline(cin, options[i][j]);
     }
 
     // STUDENT REGISTER
-    else if (choice == 2)
+    else if (choice == 3)
     {
         cout << "\n====== STUDENT REGISTRATION ======\n";
 
@@ -74,8 +152,22 @@ getline(cin, options[i][j]);
         cout << "Enter Roll Number: ";
         cin >> rollNumbers[studentCount];
 
-        cout << "Set Password: ";
-        cin >> studentPasswords[studentCount];
+        // PASSWORD LOOP
+        while (true)
+        {
+            cout << "Set Password (Max 6 Characters): ";
+            cin >> studentPasswords[studentCount];
+
+            if (studentPasswords[studentCount].length() <= 6)
+            {
+                break;
+            }
+            else
+            {
+                cout << "\nPassword exceeded limit!\n";
+                cout << "Please Enter Password Again.\n\n";
+            }
+        }
 
         cout << "\nStudent Account Created Successfully!\n";
 
@@ -83,10 +175,11 @@ getline(cin, options[i][j]);
     }
 
     // STUDENT LOGIN
-    else if (choice == 3)
+    else if (choice == 4)
     {
         int roll;
         string pass;
+        string enteredQuizCode;
 
         bool found = false;
 
@@ -107,16 +200,26 @@ getline(cin, options[i][j]);
                 found = true;
 
                 cout << "\nLogin Successful!\n";
-                cout << "Welcome "
-                     << studentNames[i] << endl;
 
-                // QUIZ START
+                // QUIZ CODE CHECK
+                cout << "\nEnter Quiz Code: ";
+                cin >> enteredQuizCode;
+
+                if (enteredQuizCode != quizCode)
+                {
+                    cout << "\nInvalid Quiz Code!\n";
+                    return 0;
+                }
+
+                cout << "\nQuiz Code Verified!\n";
+
                 int score = 0;
                 int ans;
 
                 cout << "\n====== QUIZ STARTED ======\n";
 
-                for (int q = 0; q < 5; q++)
+                // DISPLAY QUESTIONS
+                for (int q = 0; q < totalQuestions; q++)
                 {
                     cout << "\nQuestion "
                          << q + 1 << ": "
@@ -131,8 +234,6 @@ getline(cin, options[i][j]);
 
                     cout << "Enter Your Answer: ";
                     cin >> ans;
-
-                    studentAnswers[q] = ans;
 
                     if (ans == correctAnswers[q])
                     {
@@ -154,10 +255,11 @@ getline(cin, options[i][j]);
                      << studentNames[i] << endl;
 
                 cout << "Score: "
-                     << score << "/5\n";
+                     << score << "/"
+                     << totalQuestions << endl;
 
                 float percentage =
-                    (score / 5.0) * 100;
+                    (score * 100.0) / totalQuestions;
 
                 cout << "Percentage: "
                      << percentage << "%\n";
@@ -170,37 +272,6 @@ getline(cin, options[i][j]);
                 {
                     cout << "Result: FAIL\n";
                 }
-
-                // ANALYSIS
-                cout << "\n=====================================\n";
-                cout << "           QUIZ ANALYSIS\n";
-                cout << "=====================================\n";
-
-                for (int q = 0; q < 5; q++)
-                {
-                    cout << "\nQuestion "
-                         << q + 1 << ": "
-                         << questions[q]
-                         << endl;
-
-                    cout << "Your Answer: "
-                         << options[q][studentAnswers[q] - 1]
-                         << endl;
-
-                    cout << "Correct Answer: "
-                         << options[q][correctAnswers[q] - 1]
-                         << endl;
-
-                    if (studentAnswers[q] ==
-                        correctAnswers[q])
-                    {
-                        cout << "Status: Correct\n";
-                    }
-                    else
-                    {
-                        cout << "Status: Wrong\n";
-                    }
-                }
             }
         }
 
@@ -211,7 +282,7 @@ getline(cin, options[i][j]);
     }
 
     // EXIT
-    else if (choice == 4)
+    else if (choice == 5)
     {
         cout << "\nThank You!\n";
     }
@@ -223,7 +294,3 @@ getline(cin, options[i][j]);
 
     return 0;
 }
-
-
-
-
